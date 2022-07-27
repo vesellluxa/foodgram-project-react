@@ -21,13 +21,9 @@ class FoodUserManager(BaseUserManager):
             self,
             email,
             password,
-            first_name,
-            last_name,
             username):
         user = self.model(
             email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
             username=username
         )
         user.set_password(password)
@@ -47,39 +43,45 @@ class FoodUser(AbstractUser):
         (MODERATOR, 'Moderator'),
     ]
 
-    email = models.EmailField(
-        max_length=254,
-        unique=True,
-        blank=False,
-        null=False)
-    first_name = models.CharField(
-        max_length=150,
-        unique=False,
-        blank=False,
-        null=False)
-    last_name = models.CharField(
-        max_length=150,
-        unique=False,
-        blank=False,
-        null=False)
-    password = models.CharField(max_length=150)
-    role = models.CharField(max_length=100, choices=ROLES, default=USER)
-    is_staff = models.BooleanField(default=False)
+    email = models.EmailField(verbose_name='email',
+                              max_length=254,
+                              unique=True)
+    first_name = models.CharField(verbose_name='Имя',
+                                  max_length=150)
+    last_name = models.CharField(verbose_name='Фамилия',
+                                 max_length=150)
+    password = models.CharField(verbose_name='Пароль',
+                                max_length=150)
+    role = models.CharField(verbose_name='Роль',
+                            max_length=100, choices=ROLES, default=USER)
+    is_staff = models.BooleanField(verbose_name='Сотрудник',
+                                   default=False)
 
     objects = FoodUserManager()
 
-    def is_following(self, instance):
-        return Follow.objects.filter(user=self, following=instance).exists()
+    def followings(self):
+        follow_list = []
+        follows = Follow.objects.filter(user=self).values('following')
+        for follow in follows:
+            follow_list.append(follow['following'])
+        return follow_list
+        # return Follow.objects.filter(user=self, following=instance).exists()
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
 
 class Follow(models.Model):
     user = models.ForeignKey(
-        FoodUser,
+        verbose_name='Пользователь',
+        to=FoodUser,
         related_name='follower',
         on_delete=models.CASCADE,
     )
     following = models.ForeignKey(
-        FoodUser,
+        verbose_name='Подписан',
+        to=FoodUser,
         related_name='following',
         on_delete=models.CASCADE,
     )
@@ -95,3 +97,6 @@ class Follow(models.Model):
                 name='not_sub'
             )
         ]
+
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
