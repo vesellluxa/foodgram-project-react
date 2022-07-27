@@ -4,6 +4,8 @@ from recipes.models import (Favourite, Ingredient, Ingredients, Recipe,
                             ShoppingList, Tags)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from drf_extra_fields.fields import Base64ImageField
+
 from users.models import FoodUser
 from users.serializers import FoodUserSerializer
 
@@ -44,7 +46,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     # tags = TagSerializer(many=True)
     author = FoodUserSerializer(required=False)
     cooking_time = serializers.IntegerField(required=True)
-    image = serializers.CharField(required=True)
+    image = Base64ImageField(read_only=True, required=True)
 
     # name = serializers.
 
