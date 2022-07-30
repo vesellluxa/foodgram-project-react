@@ -60,12 +60,8 @@ class FoodUser(AbstractUser):
     objects = FoodUserManager()
 
     def followings(self):
-        follow_list = []
-        follows = Follow.objects.filter(user=self).values('following')
-        for follow in follows:
-            follow_list.append(follow['following'])
-        return follow_list
-        # return Follow.objects.filter(user=self, following=instance).exists()
+        return Follow.objects.filter(
+            user=self).values_list('following', flat=True)
 
     class Meta:
         verbose_name = 'Пользователь'

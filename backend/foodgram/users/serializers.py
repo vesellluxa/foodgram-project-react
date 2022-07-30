@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from users.models import Follow, FoodUser
+from recipes.models import Favourite, ShoppingList
 
 
 class TokenObtainSerializer(serializers.Serializer):
@@ -56,6 +57,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         validated_data['password'] = self.context['request'].data.get(
             'password')
         user = self.Meta.model.objects.create_user(**validated_data)
+        ShoppingList.objects.create(owner=user)
+        Favourite.objects.create(owner=user)
         return user
 
 

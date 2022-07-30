@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from recipes.permissions import IsAuthenticatedOrRegister
 from recipes.pagination import ApiPagination
 from recipes.serializers import FoodUserSerializer, SubscriptionSerializer
 from users.models import Follow, FoodUser
@@ -18,7 +19,7 @@ class FoodUserViewSet(mixins.CreateModelMixin,
                       GenericViewSet):
     serializer_class = FoodUserSerializer
     queryset = FoodUser.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrRegister, )
     authentication_classes = (TokenAuthentication,)
     pagination_class = ApiPagination
 
