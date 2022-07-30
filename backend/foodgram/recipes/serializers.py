@@ -151,18 +151,14 @@ class RepsesentRecipeSerializer(serializers.ModelSerializer):
             'cooking_time')
 
     def get_is_favorite(self, instance):
-        if Favourite.objects.filter(
+        return Favourite.objects.filter(
                 owner=self.context.get('request').user,
-                recipes=instance).exists():
-            return True
-        return False
+                recipes=instance).exists()
 
     def get_is_in_shopping_cart(self, instance):
-        if ShoppingList.objects.filter(
+        return ShoppingList.objects.filter(
                 owner=self.context.get('request').user,
-                recipes=instance).exists():
-            return True
-        return False
+                recipes=instance).exists()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

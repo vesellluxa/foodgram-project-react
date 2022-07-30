@@ -1,16 +1,15 @@
 from rest_framework import mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from recipes.permissions import IsAuthenticatedOrRegister
 from recipes.pagination import ApiPagination
 from recipes.serializers import FoodUserSerializer, SubscriptionSerializer
+from users import serializers
 from users.models import Follow, FoodUser
-from users.serializers import FollowSerializer, RegistrationSerializer
-from users.serializers import SetPasswordSerializer, TokenObtainSerializer
 
 
 class FoodUserViewSet(mixins.CreateModelMixin,
@@ -24,7 +23,7 @@ class FoodUserViewSet(mixins.CreateModelMixin,
     pagination_class = ApiPagination
 
     def create(self, request, *args, **kwargs):
-        serializer = RegistrationSerializer(
+        serializer = serializers.RegistrationSerializer(
             data=request.data, context={
                 "request": request})
         serializer.is_valid(raise_exception=True)
@@ -52,7 +51,7 @@ class FoodUserViewSet(mixins.CreateModelMixin,
                 return Response(
                     {'errors': 'you already subscribed'},
                     status=status.HTTP_200_OK)
-            serializer = FollowSerializer(data=data)
+            serializer = serializers.FollowSerializer(data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             serializer = self.serializer_class(
@@ -82,7 +81,7 @@ class FoodUserViewSet(mixins.CreateModelMixin,
         permission_classes=(IsAuthenticated,)
     )
     def set_password(self, request):
-        serializer = SetPasswordSerializer(
+        serializer = serializers.SetPasswordSerializer(
             data=request.data,
             context={"request": request}
         )
@@ -105,15 +104,15 @@ class SubscriptionsViewSet(mixins.ListModelMixin,
 class FollowViewSet(mixins.DestroyModelMixin,
                     mixins.CreateModelMixin,
                     GenericViewSet):
-    serializer_class = FollowSerializer
+    serializer_class = serializers.FollowSerializer
     queryset = Follow.objects.all()
     pagination_class = ApiPagination
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def obtain_token(request):
-    serializer = TokenObtainSerializer(data=request.data)
+    serializer = serializers.TokenObtainSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     token = serializer.get_or_create_token()
     return Response(

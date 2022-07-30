@@ -1,21 +1,19 @@
 from django.http import HttpResponse
-
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from recipes import serializers
 from recipes.models import Favourite, Ingredient, Recipe, ShoppingList, Tag
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
-from recipes.serializers import IngredientSerializer, RecipeSerializer
-from recipes.serializers import TagSerializer
 from recipes.utils import generate_shop_list, custom_action
 
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    serializer_class = serializers.RecipeSerializer
     pagination_class = ApiPagination
     permission_classes = (IsAuthorOrReadOnly,)
 
@@ -42,7 +40,6 @@ class RecipeViewSet(ModelViewSet):
     )
     def download_shopping_cart(self, request):
         result = generate_shop_list(request)
-        print(result)
         filename = "ingredients.txt"
         response = HttpResponse(result, content_type="text/plain")
         response["Content-Disposition"] = "attachment; filename={0}".format(
@@ -54,12 +51,12 @@ class IngredientsViewSet(mixins.ListModelMixin,
                          mixins.RetrieveModelMixin,
                          GenericViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
+    serializer_class = serializers.IngredientSerializer
 
 
 class TagViewset(mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  GenericViewSet):
     queryset = Tag.objects.all()
-    serializer_class = TagSerializer
+    serializer_class = serializers.TagSerializer
     pagination_class = None
