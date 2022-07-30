@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, F
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,13 +10,14 @@ from recipes.serializers import ShortRecipeSerializer
 def generate_shop_list(request):
     shop_list = get_object_or_404(ShoppingList, owner=request.user)
     ingredients = {}
-    cart = shop_list.recipes.all().values(
-        'ingredients').annotate(Count('ingredients'))
+    cart = shop_list.recipes.all().values('ingredients').annotate(
+        ing_amount=Count('ingredients') * F('ingredients__amount')
+    )
     for ing in cart:
         ingredient = Ingredient.objects.filter(id=ing['ingredients']).first()
         name = (f'{ingredient.product.name}'
                 f' ({ingredient.product.measurement_unit})')
-        ingredients[name] = ingredient.amount * ing['ingredients__count']
+        ingredients[name] = ing['ing_amount']
     ingredients_list = []
     for key, value in ingredients.items():
         ingredients_list.append(f'{key} - {value}, \n')
