@@ -4,16 +4,17 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from recipes import serializers
 from recipes.models import Favourite, Ingredient, Recipe, ShoppingList, Tag
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
+from recipes.serializers import (IngredientSerializer, RecipeSerializer,
+                                 TagSerializer)
 from recipes.utils import generate_shop_list, custom_action
 
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = serializers.RecipeSerializer
+    serializer_class = RecipeSerializer
     pagination_class = ApiPagination
     permission_classes = (IsAuthorOrReadOnly,)
 
@@ -51,12 +52,12 @@ class IngredientsViewSet(mixins.ListModelMixin,
                          mixins.RetrieveModelMixin,
                          GenericViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = serializers.IngredientSerializer
+    serializer_class = IngredientSerializer
 
 
 class TagViewset(mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
                  GenericViewSet):
     queryset = Tag.objects.all()
-    serializer_class = serializers.TagSerializer
+    serializer_class = TagSerializer
     pagination_class = None
