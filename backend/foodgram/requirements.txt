@@ -21,3 +21,6 @@ reportlab==3.6.11
 six==1.16.0
 sqlparse==0.4.2
 toml==0.10.2
+django-filter==22.1
+django-extra-fields==0.3
+
