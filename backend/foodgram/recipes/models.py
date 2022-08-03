@@ -93,10 +93,6 @@ class ShoppingList(models.Model):
             models.UniqueConstraint(
                 fields=('owner',),
                 name='unique_shopping_list'
-            ),
-            models.UniqueConstraint(
-                fields=('recipes',),
-                name='unique_recipes_in_cart'
             )
         ]
         verbose_name = 'Список покупок'

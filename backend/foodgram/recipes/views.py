@@ -1,13 +1,15 @@
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from recipes.models import Favourite, Ingredient, Recipe, ShoppingList, Tag
+from recipes.filters import ProductFilter
+from recipes.models import Favourite, Product, Recipe, ShoppingList, Tag
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
-from recipes.serializers import (IngredientSerializer, RecipeSerializer,
+from recipes.serializers import (ProductSerializer, RecipeSerializer,
                                  TagSerializer)
 from recipes.utils import generate_shop_list, custom_action
 
@@ -48,11 +50,14 @@ class RecipeViewSet(ModelViewSet):
         return response
 
 
-class IngredientsViewSet(mixins.ListModelMixin,
-                         mixins.RetrieveModelMixin,
-                         GenericViewSet):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
+class ProductViewSet(mixins.ListModelMixin,
+                     mixins.RetrieveModelMixin,
+                     GenericViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
+    pagination_class = None
 
 
 class TagViewset(mixins.ListModelMixin,
