@@ -76,8 +76,9 @@ class FoodUserSerializer(RegistrationSerializer):
             'is_subscribed')
 
     def get_is_subscribed(self, instance):
-        return self.Meta.model.followings(
-            self=self.context.get('request').user)
+        return Follow.objects.filter(
+            user=self.context['request'].user,
+            following=instance).exists()
 
 
 class FollowSerializer(serializers.ModelSerializer):

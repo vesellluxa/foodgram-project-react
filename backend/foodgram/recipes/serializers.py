@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from drf_extra_fields.fields import Base64ImageField
 
 from recipes.models import (Favourite, Product, Ingredient, Recipe,
                             ShoppingList, Tag)
@@ -33,12 +32,12 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(many=True, required=True)
-    is_favorite = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     tags = serializers.ListField(required=True)
     author = FoodUserSerializer(required=False)
     cooking_time = serializers.IntegerField(required=True)
-    image = Base64ImageField
+    image = serializers.CharField()
 
     class Meta:
         model = Recipe
@@ -47,7 +46,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'tags',
             'author',
             'ingredients',
-            'is_favorite',
+            'is_favorited',
             'is_in_shopping_cart',
             'name',
             'image',
@@ -98,7 +97,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             validated_data=validated_data, instance=instance)
         return instance
 
-    def get_is_favorite(self, instance):
+    def get_is_favorited(self, instance):
         return Favourite.objects.filter(
             owner=self.context.get('request').user,
             recipes=instance).exists()
@@ -114,11 +113,12 @@ class RecipeSerializer(serializers.ModelSerializer):
     def get_ingredients(self, data):
         ingredients_id = []
         for ingredient in data:
+            product = Product.objects.get(id=ingredient.get('product')['id'])
             if not Ingredient.objects.filter(
-                    product=ingredient.get('product')['id'],
+                    product=product,
                     amount=ingredient.get('amount')).exists():
                 ing = Ingredient.objects.create(
-                    product=ingredient.get('product')['id'],
+                    product=product,
                     amount=ingredient.get('amount')
                 )
             else:

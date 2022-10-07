@@ -111,7 +111,6 @@ class FollowViewSet(mixins.DestroyModelMixin,
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def obtain_token(request):
     serializer = TokenObtainSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

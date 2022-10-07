@@ -11,7 +11,7 @@ router.register(
 router.register('users', FoodUserViewSet, basename='users')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
     path('api/auth/token/login/', obtain_token, name='login'),
     path('api/auth/token/logout/', logout, name='logout')
 ]

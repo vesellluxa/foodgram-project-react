@@ -20,6 +20,20 @@ class RecipeViewSet(ModelViewSet):
     pagination_class = ApiPagination
     permission_classes = (IsAuthorOrReadOnly,)
 
+    def get_queryset(self):
+        if self.request.GET.get('is_favorited'):
+            queryset = Favourite.objects.filter(
+                owner=self.request.user).first().recipes.all()
+        else:
+            queryset = Recipe.objects.all()
+        if self.request.GET.get('tags'):
+            queryset = queryset.filter(
+                tags__in=Tag.objects.filter(
+                    name__in=self.request.GET.getlist('tags')
+                )
+            )
+        return queryset
+
     @action(
         ['post', 'delete'],
         detail=True,

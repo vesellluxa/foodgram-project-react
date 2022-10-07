@@ -9,5 +9,5 @@ router.register('ingredients', ProductViewSet, basename='ingredients')
 router.register('tags', TagViewset, basename='tags')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
 ]
