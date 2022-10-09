@@ -1,6 +1,6 @@
 import json
 
-from recipes.models import Product
+from .models import Product
 
 
 def fixture_maker():

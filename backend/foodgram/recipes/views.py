@@ -31,7 +31,7 @@ class RecipeViewSet(ModelViewSet):
                 tags__in=Tag.objects.filter(
                     name__in=self.request.GET.getlist('tags')
                 )
-            )
+            ).distinct()
         return queryset
 
     @action(
