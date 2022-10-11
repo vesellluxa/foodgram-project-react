@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'users',
     'foodgram',
     'recipes',
+    'rest_framework',
     'rest_framework.authtoken'
 
 ]

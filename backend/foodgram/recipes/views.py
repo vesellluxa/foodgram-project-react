@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from recipes.filters import ProductFilter
-from recipes.models import Favourite, Product, Recipe, ShoppingList, Tag
+from recipes.models import Favourite, Product, Recipe, ShoppingList, Tag, FoodUser
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import (ProductSerializer, RecipeSerializer,
@@ -24,6 +24,8 @@ class RecipeViewSet(ModelViewSet):
             if self.request.GET.get('is_favorited'):
                 queryset = Favourite.objects.filter(
                     owner=self.request.user).first().recipes.all()
+            else:
+                queryset = Recipe.objects.all()
         else:
             queryset = Recipe.objects.all()
         if self.request.GET.get('tags'):
@@ -32,6 +34,12 @@ class RecipeViewSet(ModelViewSet):
                     name__in=self.request.GET.getlist('tags')
                 )
             ).distinct()
+        if self.request.GET.get('author'):
+            queryset = queryset.filter(
+                author=FoodUser.objects.filter(
+                    id=self.request.GET.get('author')
+                ).first()
+            )
         return queryset
 
     def get_serializer_class(self):
