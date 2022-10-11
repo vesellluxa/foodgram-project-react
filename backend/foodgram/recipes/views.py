@@ -10,7 +10,8 @@ from recipes.models import Favourite, Product, Recipe, ShoppingList, Tag, FoodUs
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import (ProductSerializer, RecipeSerializer,
-                                 TagSerializer, AnonymousRecipeSerializer)
+                                 TagSerializer,
+                                 AnonymousRecipeSerializer)
 from recipes.utils import generate_shop_list, custom_action
 
 
