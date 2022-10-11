@@ -10,20 +10,20 @@ from recipes.models import Favourite, Product, Recipe, ShoppingList, Tag
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import (ProductSerializer, RecipeSerializer,
-                                 TagSerializer)
+                                 TagSerializer, AnonymousRecipeSerializer)
 from recipes.utils import generate_shop_list, custom_action
 
 
 class RecipeViewSet(ModelViewSet):
-    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = ApiPagination
     permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
-        if self.request.GET.get('is_favorited'):
-            queryset = Favourite.objects.filter(
-                owner=self.request.user).first().recipes.all()
+        if self.request.user.is_authenticated:
+            if self.request.GET.get('is_favorited'):
+                queryset = Favourite.objects.filter(
+                    owner=self.request.user).first().recipes.all()
         else:
             queryset = Recipe.objects.all()
         if self.request.GET.get('tags'):
@@ -33,6 +33,11 @@ class RecipeViewSet(ModelViewSet):
                 )
             ).distinct()
         return queryset
+
+    def get_serializer_class(self):
+        if self.request.user.is_authenticated:
+            return RecipeSerializer
+        return AnonymousRecipeSerializer
 
     @action(
         ['post', 'delete'],

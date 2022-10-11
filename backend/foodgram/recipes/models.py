@@ -73,10 +73,12 @@ class Recipe(models.Model):
         verbose_name='Время приготовления',
         default=1, validators=[MinValueValidator(1)]
     )
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        ordering = ('-pub_date',)
 
 
 class ShoppingList(models.Model):

@@ -1,11 +1,11 @@
 import json
 
-from .models import Product
+from recipes.models import Product
 
 
 def fixture_maker():
     data = json.load(
-        open('ingredients.json',
+        open('/app/recipes/ingredients.json',
              "r", encoding="utf-8"))
     for product in data:
         Product.objects.create(

@@ -167,6 +167,17 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
+class AnonymousRecipeSerializer(ShortRecipeSerializer):
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time', 'is_in_shopping_cart')
+
+    def get_is_in_shopping_cart(self, instance):
+        return False
+
+
 class SubscriptionSerializer(FoodUserSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
