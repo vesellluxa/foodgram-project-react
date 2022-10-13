@@ -22,9 +22,14 @@ class RecipeViewSet(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
+            if self.request.GET.get('is_in_shopping_cart'):
+                return ShoppingList.objects.filter(
+                    owner=self.request.user
+                ).first().recipes.all()
             if self.request.GET.get('is_favorited'):
                 queryset = Favourite.objects.filter(
-                    owner=self.request.user).first().recipes.all()
+                    owner=self.request.user
+                ).first().recipes.all()
             else:
                 queryset = Recipe.objects.all()
         else:

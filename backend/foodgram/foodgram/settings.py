@@ -11,7 +11,7 @@ load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='qo7r_a!6_pjx4!(nrj9+mm2&(7qsu!9ma9hiw12es8(q#2-=x9')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

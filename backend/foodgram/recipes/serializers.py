@@ -60,6 +60,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
         return serializer.data
 
+    def validate_cooking_time(self, value):
+        if value <= 0:
+            raise ValidationError('Not valid cooking_time')
+        return value
+
     def validate_tags(self, value):
         for tag in value:
             if not Tag.objects.filter(pk=tag).exists():
@@ -168,11 +173,13 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 
 class AnonymousRecipeSerializer(ShortRecipeSerializer):
+    tags = TagSerializer(many=True)
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time', 'is_in_shopping_cart')
+        fields = ('id', 'name', 'image', 'cooking_time',
+                  'is_in_shopping_cart', 'tags')
 
     def get_is_in_shopping_cart(self, instance):
         return False
