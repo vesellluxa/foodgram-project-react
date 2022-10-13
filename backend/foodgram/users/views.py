@@ -124,4 +124,4 @@ def obtain_token(request):
 @permission_classes([IsAuthenticated])
 def logout(request):
     request.user.auth_token.delete()
-    return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)

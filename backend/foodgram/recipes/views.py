@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from recipes.filters import ProductFilter
-from recipes.models import Favourite, Product, Recipe, ShoppingList, Tag, FoodUser
+from recipes.models import (Favourite, Product, Recipe,
+                            ShoppingList, Tag, FoodUser)
 from recipes.pagination import ApiPagination
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.serializers import (ProductSerializer, RecipeSerializer,

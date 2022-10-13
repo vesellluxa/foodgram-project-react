@@ -172,19 +172,6 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class AnonymousRecipeSerializer(ShortRecipeSerializer):
-    tags = TagSerializer(many=True)
-    is_in_shopping_cart = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time',
-                  'is_in_shopping_cart', 'tags')
-
-    def get_is_in_shopping_cart(self, instance):
-        return False
-
-
 class SubscriptionSerializer(FoodUserSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -214,3 +201,25 @@ class SubscriptionSerializer(FoodUserSerializer):
 
     def get_recipes_count(self, value):
         return Recipe.objects.filter(author=value).count()
+
+
+class AnonymousUserSerializer(FoodUserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
+    def get_is_subscribed(self, instance):
+        return False
+
+
+class AnonymousRecipeSerializer(ShortRecipeSerializer):
+    tags = TagSerializer(many=True)
+    is_in_shopping_cart = serializers.SerializerMethodField()
+    author = AnonymousUserSerializer()
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time',
+                  'is_in_shopping_cart', 'tags', 'text',
+                  'author')
+
+    def get_is_in_shopping_cart(self, instance):
+        return False
