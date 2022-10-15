@@ -39,11 +39,5 @@ jobs:
             cd foodgram-project-react/infra
             sudo docker-compose stop
             sudo docker container rm infra_backend_1
-            touch .env
-            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
-            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+            sudo docker image rm vesellluxa/foodgram  --force
             sudo docker-compose up -d 
