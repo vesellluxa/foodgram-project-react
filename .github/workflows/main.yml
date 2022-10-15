@@ -37,6 +37,6 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd foodgram-project-react/infra
-            sudo docker container stop infra_backend_1
-            sudo docker image rm vesellluxa/foodgram  --force
+            sudo docker-compose stop
+            sudo docker container rm infra_backend_1
             sudo docker-compose up -d
