@@ -7,4 +7,4 @@ class ApiPagination(PageNumberPagination):
     """Кастомный класс пагинации.
     page_size - страницы по умолчанию.
     """
-    page_size = api_settings.PAGE_SIZE
+    page_size_query_param = "limit"
