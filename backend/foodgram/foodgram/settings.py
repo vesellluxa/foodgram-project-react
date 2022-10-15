@@ -1,4 +1,4 @@
-# ya tuta
+# a net ya zdesya
 
 import os
 
